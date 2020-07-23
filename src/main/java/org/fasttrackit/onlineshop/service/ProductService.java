@@ -1,6 +1,7 @@
 package org.fasttrackit.onlineshop.service;
 
 import org.fasttrackit.onlineshop.domain.Product;
+import org.fasttrackit.onlineshop.exception.ResourceNotFoundException;
 import org.fasttrackit.onlineshop.persistance.ProductRepository;
 
 import org.fasttrackit.onlineshop.transfer.SaveProductRequest;
@@ -9,7 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-// Spring Bean (services, repository etc)
+import java.util.Optional;
+
 @Service
 public class ProductService {
 
@@ -36,4 +38,20 @@ public class ProductService {
 
          return productRepository.save(product);
     }
+
+    public Product getProduct(long id){
+        LOGGER.info("Retrieving product {}, id");
+
+//        final Optional<Product> productOptional = productRepository.findById(id);
+//
+//        if (productOptional.isPresent()) {
+//            return  productOptional.get();
+//        } else {
+//            throw new ResourceNotFoundException("Product " + id + " Not Found..");
+//        }
+        return productRepository.findById(id)
+                // Lambda expression
+                .orElseThrow(() -> new ResourceNotFoundException("Product " + id + " Not Found.."));
+    }
+
 }
