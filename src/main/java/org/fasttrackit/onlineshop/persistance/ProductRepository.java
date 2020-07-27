@@ -4,6 +4,7 @@ import org.fasttrackit.onlineshop.domain.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -12,6 +13,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product>findByNameContainingAndQuantityGreaterThanEqual(String partialName, int minimumQuantity, Pageable pageable);
 
 
+    @Query(value = "SELECT product FROM Product product WHERE " +
+            "(:partialName IS null OR product.name = :partialName) AND" +
+            "(:minimumQuantity IS  null OR product.quantity >= :minimumQuantity)")
+    Page<Product> findByOptionalCriteria(String partialName, Integer minimumQuantity, Pageable pageable);
 
 }
 
